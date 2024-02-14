@@ -13,7 +13,7 @@ def format_input(input: str | list[str] | pd.DataFrame):
     
     if not 'id_min' in df or not 'id_max' in df:
         L = df['sequence'].apply(len)
-        df['id_max'] = L.expanding(1).sum().sub(1)
-        df['id_min'] = df['id_max'].sub(L.sub(1))
+        df['id_max'] = L.expanding(1).sum().sub(1).astype(int)
+        df['id_min'] = df['id_max'].sub(L.sub(1)).astype(int)
 
     return df
