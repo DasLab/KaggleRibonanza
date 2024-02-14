@@ -6,7 +6,7 @@ import subprocess
 from joblib import Parallel, delayed
 
 # Needs to be done before importing arnie
-ROOT = path.abspath(path.join(path.dirname(__file__), '../'))
+ROOT = path.abspath(path.join(path.dirname(__file__), '../../'))
 os.environ['ARNIEFILE'] = path.join(ROOT, 'external/arniefile.txt')
 os.environ['PERL5LIB'] = path.join(ROOT, 'external/perl/lib/perl5')
 
