@@ -1,0 +1,14 @@
+# External dependencies
+/external/*
+!/external/perl
+/external/perl/*
+!/external/perl/cpan
+/external/perl/cpan/*
+!/external/perl/cpan/MyConfig.pm
+
+# Caches
+__pycache__/
+lightning_logs/
+
+# Editors
+.vscode/

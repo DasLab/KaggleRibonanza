@@ -1,0 +1,7 @@
+The contents of this repository are covered by multiple licenses.
+* The k1_vigg, k2_hoyso, k4_gorna, and k6_iijj models are covered by the MIT license
+* The k3_aek model is covered by the Apache 2.0 license
+* The k5_rlj model is covered by the GNU Lesser General Public License (LGPL)
+* Supporting code (includig utilities, notebooks, and scripts) are covered by the MIT license
+
+Please see the LICENSES directory for details including full license text
