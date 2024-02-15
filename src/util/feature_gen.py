@@ -74,7 +74,13 @@ def compute_feature(feat: FeatureName, sequence: str):
     elif feat == 'mfe_eternafold':
         return mfe(sequence, package='eternafold')
     elif feat == 'mfe_vienna2':
-        return mfe(sequence, package='vienna_2')
+        try:
+            return mfe(sequence, package='vienna_2')
+        except FileNotFoundError:
+            # There is currently a race condition in arnie where if mfe is called multile times,
+            # multiple processes may attempt to remove a file vienna creates in the cwd called rna.ps.
+            # If we run into that, just retry
+            return compute_feature(feat, sequence)
     elif feat == 'mea_ipknot':
         return pk_predict(sequence, 'ipknot', refinement=1, cpu=1)
     elif feat == 'sstype_capr':
@@ -118,5 +124,5 @@ def precompute(feat: FeatureName, sequences: Iterable[str], n_jobs: int):
         feature_cache.cache.set(feat, seq, res)
 
 def precompute_multi(feats: Iterable[FeatureName], sequences: Iterable[str], n_jobs: int):
-    for feat in progress.progress_manager.iterator(feats, desc='Features'):
+    for feat in progress.progress_manager.iterator(feats, desc='features'):
         precompute(feat, sequences, n_jobs)
