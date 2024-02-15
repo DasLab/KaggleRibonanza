@@ -98,7 +98,14 @@ class NotebookProgress(TqdmProgress):
         from IPython.display import display
         if self.container == None or self.level == 0:
             from ipywidgets import VBox
-            self.container = VBox()
+            class WrapperVBox(VBox):
+                # Provide alternate text to use when saving the text/plain version of this widget
+                # so that when viewing an already-run notebook, it will show something
+                # meaningful instead of "VBox()")
+                def __repr__(self):
+                    nonlocal kwargs
+                    return f'Computing {kwargs["desc"]}...'
+            self.container = WrapperVBox()
             display(self.container)
 
         # And a hack for https://github.com/jupyter-widgets/ipywidgets/issues/2585
