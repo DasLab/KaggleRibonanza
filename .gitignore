@@ -9,6 +9,7 @@
 # Caches
 __pycache__/
 lightning_logs/
+memo/
 
 # Editors
 .vscode/
