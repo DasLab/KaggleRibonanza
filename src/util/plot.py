@@ -2,12 +2,15 @@ from math import sin
 import pandas as pd
 from matplotlib import pyplot as plt
 from matplotlib.colors import Normalize
-from matplotlib.cm import ScalarMappable
+from matplotlib.cm import ScalarMappable, get_cmap
 
 def plot_reactivity(sequences: str | list[str], inferences: dict[str, pd.DataFrame]):
     sequences = [sequences] if isinstance(sequences, str) else sequences
     norm = Normalize(0, 1)
-    cmap = 'gist_heat_r'
+    cmap = get_cmap('gist_heat_r')
+    cmap.set_bad(color='grey')
+
+    max_seqlen = max([len(seq) for seq in sequences])
 
     with plt.ioff():
         fig, axs = plt.subplots(
@@ -17,10 +20,7 @@ def plot_reactivity(sequences: str | list[str], inferences: dict[str, pd.DataFra
             layout="constrained",
             figsize=(
                 # Width scales linearly with max sequence length up to 16in
-                min(
-                    max([len(seq) for seq in sequences]) / 2,
-                    16
-                ),
+                min(max_seqlen / 2, 16),
                 # Height scales directly with #sequences*#models, clamped
                 max(
                     min(
@@ -44,7 +44,9 @@ def plot_reactivity(sequences: str | list[str], inferences: dict[str, pd.DataFra
             rdms = []
             reactive_idx = 0
             for seq in sequences:
-                rdms.append(inference['reactivity_DMS_MaP'][reactive_idx:reactive_idx + len(seq)])
+                rdms.append(
+                    inference['reactivity_DMS_MaP'][reactive_idx:reactive_idx + len(seq)].reset_index(drop=True).reindex(range(max_seqlen))
+                )
                 reactive_idx += len(seq)
 
             axs[model_idx, 0].imshow(rdms, norm=norm, cmap=cmap, aspect='auto')
@@ -55,7 +57,9 @@ def plot_reactivity(sequences: str | list[str], inferences: dict[str, pd.DataFra
             r2a3 = []
             reactive_idx = 0
             for seq in sequences:
-                r2a3.append(inference['reactivity_DMS_MaP'][reactive_idx:reactive_idx + len(seq)])
+                r2a3.append(
+                    inference['reactivity_DMS_MaP'][reactive_idx:reactive_idx + len(seq)].reset_index(drop=True).reindex(range(max_seqlen))
+                )
                 reactive_idx += len(seq)
 
             axs[model_idx, 1].imshow(r2a3, norm=norm, cmap=cmap, aspect='auto')
