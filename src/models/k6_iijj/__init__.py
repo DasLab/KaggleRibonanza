@@ -8,7 +8,7 @@ from .model.util import parse_model_name, create_model
 from .model.srf.util import parser
 from .model.srf.dataset import gen_ds
 from .model.srf import models
-from ...util import progress
+from ...util.progress import get_progress_manager
 from ...util.feature_gen import FeatureName
 from ...util.format_input import format_input
 
@@ -49,7 +49,7 @@ def infer(sequences: str | list[str] | pd.DataFrame, batch_size=64):
         test_pred = model.predict_rst(test_ds, data_type='test')
         return test_pred
 
-    for name, cls in progress.progress_manager.iterator(parse_model_name(MODEL_NAMES).items(), desc='k6_iijj submodels'):
+    for name, cls in get_progress_manager().iterator(parse_model_name(MODEL_NAMES).items(), desc='k6_iijj submodels'):
         test_preds.append(run_model(name, args, cls, processed_df))
         gc.collect()
         torch.cuda.empty_cache()

@@ -4,6 +4,7 @@ import os
 from os import path
 import subprocess
 from joblib import Parallel, delayed
+from .load_models import MODEL_NAMES, load_models
 
 # Needs to be done before importing arnie
 ROOT = path.abspath(path.join(path.dirname(__file__), '../../'))
@@ -15,8 +16,8 @@ from arnie.pk_predictors import pk_predict
 from arnie.mfe import mfe
 from arnie.mea.mea import MEA
 from arnie.utils import filename
-from . import feature_cache
-from . import progress
+from .feature_cache import NullFeatureCache, get_feature_cache
+from .progress import get_progress_manager
 
 def capr(seq):
     capr_executable = path.join(ROOT, 'external/CapR/CapR')
@@ -91,38 +92,43 @@ def compute_feature(feat: FeatureName, sequence: str):
         raise ValueError(f'Invalid feature name {feat}')
 
 def get_feature(feat: FeatureName, sequence: str):
-    cached = feature_cache.cache.get(feat, sequence)
+    cached = get_feature_cache().get(feat, sequence)
     if cached is not None: return cached
 
     res = compute_feature(feat, sequence)
 
-    feature_cache.cache.set(feat, sequence, res)
+    get_feature_cache().set(feat, sequence, res)
 
     return res
 
-def precompute(feat: FeatureName, sequences: Iterable[str], n_jobs: int):
-    if isinstance(feature_cache.cache, feature_cache.NullFeatureCache):
+def precompute_feature(feat: FeatureName, sequences: Iterable[str], n_jobs: int):
+    if isinstance(get_feature_cache(), NullFeatureCache):
         return
     
     # Note all interactions with the feature cache have to happen outside the parallel call,
     # as when the parallelized function is run, it will be in a separate process without
     # access to the cache
     to_compute = [
-        seq for seq in progress.progress_manager.iterator(sequences, f'Find uncached for feature: {feat}')
-        if not feature_cache.cache.exists(feat, seq)
+        seq for seq in get_progress_manager().iterator(sequences, f'Find uncached for feature: {feat}')
+        if not get_feature_cache().exists(feat, seq)
     ]
 
     if len(to_compute) == 0: return
 
-    for (res, seq) in progress.progress_manager.iterator(
+    for (res, seq) in get_progress_manager().iterator(
         Parallel(return_as="generator", n_jobs=n_jobs)(
             delayed(lambda seq: (compute_feature(feat, seq), seq))(seq) for seq in to_compute
         ),
         total=len(to_compute),
         desc=f'Precompute feature: {feat}'
     ):
-        feature_cache.cache.set(feat, seq, res)
+        get_feature_cache().set(feat, seq, res)
 
-def precompute_multi(feats: Iterable[FeatureName], sequences: Iterable[str], n_jobs: int):
-    for feat in progress.progress_manager.iterator(feats, desc='features'):
-        precompute(feat, sequences, n_jobs)
+def precompute_features(models: Iterable[MODEL_NAMES], sequences: Iterable[str], n_jobs: int):
+    models = load_models(models, display_progress=False)
+    feats = {
+        feature for model in models.values() for feature in model.REQUIRED_FEATURES
+    }
+
+    for feat in get_progress_manager().iterator(feats, desc='features'):
+        precompute_feature(feat, sequences, n_jobs)

@@ -1,22 +1,15 @@
-import logging, os, json
+import logging, os
 import random
-from glob import glob
-from collections import OrderedDict, defaultdict
+from collections import OrderedDict
 import numpy as np
-import inspect
-from functools import partial
-import shutil
 from tqdm import tqdm
 import re
 from copy import deepcopy
 import itertools
 import torch
-import torch.nn.functional as F
 import torch.multiprocessing as mp
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
-from functools import update_wrapper, wraps
-from torch.optim.swa_utils import AveragedModel
 try:
     from accelerate import Accelerator
 except:
@@ -31,7 +24,7 @@ from ..basic_models import CFG as BasicCFG, Model as BasicModel, LossHist
 from . import util as pt_util
 from .. import util
 
-from ......util import progress
+from ......util.progress import get_progress_manager
 
 WEIGHT_SUFFIX = '.bin'
 
@@ -661,7 +654,7 @@ class PTModel(BasicModel):
         outputs = []
         #if not isinstance(ds, tqdm):
         #    ds = tqdm(enumerate(ds), total=len(ds), miniters=self.cfg.verbose, desc=f"{desc} for {data_type}")
-        ds = progress.progress_manager.iterator(ds, 'batch')
+        ds = get_progress_manager().iterator(ds, 'batch')
         #for i, batch in ds:
         for batch in ds:
             # ds.miniters = self.cfg.verbose

@@ -8,7 +8,7 @@ import torch
 from torch.utils.data import DataLoader
 from .model.model import RNARegModel
 from .model.dataset import RNADataset, collate_fn
-from ...util import progress
+from ...util.progress import get_progress_manager
 from ...util.feature_gen import FeatureName
 from ...util.format_input import format_input
 from ...util.torch import DeviceDataLoader
@@ -41,7 +41,7 @@ def infer_model(path: str, input_df: pd.DataFrame, batch_size: int):
     ids, preds = [], []
 
     with torch.no_grad(), torch.cuda.amp.autocast():
-        for x, y in progress.progress_manager.iterator(dl, desc='batch'):
+        for x, y in get_progress_manager().iterator(dl, desc='batch'):
             p = model(x)
 
             for idx, mask, pi in zip(y['ids'].cpu(), x['mask'].cpu(), p['react_pred'].cpu()):
@@ -67,7 +67,7 @@ def infer(sequences: str | list[str] | pd.DataFrame, batch_size=128):
         input_df = format_input(sequences)
         subs = []
 
-        for p in progress.progress_manager.iterator(glob.glob(f'{path.dirname(__file__)}/model_weights/*.pth'), desc='k2_hoyso submodels'):
+        for p in get_progress_manager().iterator(glob.glob(f'{path.dirname(__file__)}/model_weights/*.pth'), desc='k2_hoyso submodels'):
             sub = infer_model(p, input_df.copy(deep=False), batch_size)
             subs.append(sub)
             gc.collect()

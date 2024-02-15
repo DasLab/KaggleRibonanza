@@ -8,7 +8,7 @@ import torch
 from torch.utils.data import DataLoader
 from .models.squeezeformer import CustomDataset as SequeezeformerDataset, Net as SqueezeformerNet
 from .models.twintower import TestDataset as TwintowerDataset, Net as TwintowerNet, collate_fn as twintower_collate_fn
-from ...util import progress
+from ...util.progress import get_progress_manager
 from ...util.feature_gen import FeatureName
 from ...util.format_input import format_input
 from ...util.torch import DeviceDataLoader
@@ -63,7 +63,7 @@ def infer_sequeezeformer(input_df: pd.DataFrame, batch_size: int):
     ids, preds = [],[]
 
     with torch.no_grad(), torch.cuda.amp.autocast():
-        for x, y in progress.progress_manager.iterator(dl, desc='batch'):
+        for x, y in get_progress_manager().iterator(dl, desc='batch'):
             p = model(x).clip(0,1)
                 
             for idx, mask, pi in zip(y['ids'].cpu(), x['input_mask'].cpu(), p.cpu()):
@@ -146,7 +146,7 @@ def infer_twintower(input_df: pd.DataFrame, batch_size: int):
     ids, preds = [], []
 
     with torch.no_grad(), torch.cuda.amp.autocast():
-        for x, y in progress.progress_manager.iterator(dl, desc='batch'):
+        for x, y in get_progress_manager().iterator(dl, desc='batch'):
             p = model(x).clip(0,1)
                 
             for idx, mask, pi in zip(y['ids'].cpu(), x['mask_tokens'].bool().cpu(), p.cpu()):
@@ -173,7 +173,7 @@ def infer(sequences: str | list[str] | pd.DataFrame, batch_size_squeezeformer=12
 
         input_df = format_input(sequences)
 
-        with progress.progress_manager.updater(total=2, desc='k3_aek submodels') as pbar:
+        with get_progress_manager().updater(total=2, desc='k3_aek submodels') as pbar:
             squeezeformer_pred = infer_sequeezeformer(input_df.copy(deep=False), batch_size_squeezeformer)
             pbar.update(1)
             gc.collect()

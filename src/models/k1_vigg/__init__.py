@@ -6,7 +6,7 @@ import pandas as pd
 import torch
 from torch.utils.data import DataLoader
 from .model.model import RNAdjNetBrk, RNA_Dataset_Test, RNAdjNetBrkReactive, RNA_Dataset_Test_Reactive
-from ...util import progress
+from ...util.progress import get_progress_manager
 from ...util.feature_gen import FeatureName
 from ...util.format_input import format_input
 from ...util.torch import DeviceDataLoader
@@ -50,7 +50,7 @@ def infer_standard(
     ids, preds = [],[]
 
     with torch.no_grad(), torch.cuda.amp.autocast() if torch.cuda.is_available() else nullcontext():
-        for x, y in progress.progress_manager.iterator(dl, desc='batch'):
+        for x, y in get_progress_manager().iterator(dl, desc='batch'):
             p = model(x).clip(0,1)
 
             for idx, mask, pi in zip(y['ids'].cpu(), x['mask'].cpu(), p.cpu()):
@@ -123,7 +123,7 @@ def infer_reactive(
     ids, preds = [], []
 
     with torch.no_grad(), torch.cuda.amp.autocast() if torch.cuda.is_available() else nullcontext():
-        for x, y in progress.progress_manager.iterator(dl, desc='batch'):
+        for x, y in get_progress_manager().iterator(dl, desc='batch'):
             p = model(x).clip(0,1)
 
             for idx, mask, pi in zip(y['ids'].cpu(), x['mask'].cpu(), p.cpu()):
@@ -145,7 +145,7 @@ def infer(sequences: str | list[str] | pd.DataFrame, batch_size=128):
 
     preds: list[pd.DataFrame] = []
 
-    with progress.progress_manager.updater(total=28, desc='k1_vigg submodels') as pbar:
+    with get_progress_manager().updater(total=28, desc='k1_vigg submodels') as pbar:
         # models trained on kfold 1000 split without se-blocks and brackets
         for i in range(0, 10):
             preds.append(infer_standard(input_df.copy(deep=False), path.join(model_dir, 'weights_thousands', f'model_{i}.pth'), batch_size))

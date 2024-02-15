@@ -115,3 +115,6 @@ class FSFeatureCache(FeatureCache):
 
 default_cache = NullFeatureCache()
 cache: FeatureCache | None = default_cache
+
+def get_feature_cache():
+    return cache

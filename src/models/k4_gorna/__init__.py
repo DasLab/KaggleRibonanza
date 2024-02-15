@@ -20,7 +20,7 @@ from .models.tattaka.exp070 import RibonanzaLightningModel as RLModel070
 from .models.tattaka.exp071 import RibonanzaLightningModel as RLModel071
 from .models.tattaka.exp072 import RibonanzaLightningModel as RLModel072
 from .models.yu4u.model import RNAModel as Type2Model
-from ...util import progress
+from ...util.progress import get_progress_manager
 from ...util.feature_gen import FeatureName
 from ...util.format_input import format_input
 
@@ -50,7 +50,7 @@ def infer_type1(input_df: pd.DataFrame, Model: pl.LightningModule, checkpoint_di
 
         ids, preds = [], []
         with torch.no_grad(), torch.cuda.amp.autocast():
-            for x, y in progress.progress_manager.iterator(dl, desc='batch'):
+            for x, y in get_progress_manager().iterator(dl, desc='batch'):
                 p = torch.nan_to_num(model(x)).clip(0, 1)
                 for idx, mask, pi in zip(y['ids'].cpu(), x['mask'].cpu(), p.cpu()):
                     ids.append(idx[mask])
@@ -66,7 +66,7 @@ def infer_type1(input_df: pd.DataFrame, Model: pl.LightningModule, checkpoint_di
         })
 
     ckpt_paths = glob(f'{checkpoint_dir}/fold*/**/*.ckpt', recursive=True)
-    for ckpt_path in progress.progress_manager.iterator(ckpt_paths, desc='fold'):
+    for ckpt_path in get_progress_manager().iterator(ckpt_paths, desc='fold'):
         fold_results.append(run_fold(ckpt_path, input_df, batch_size))
         gc.collect()
         torch.cuda.empty_cache()
@@ -129,7 +129,7 @@ def infer_type2(input_df: pd.DataFrame, checkpoint_dir: str, batch_size: int):
         ids, preds = [], []
 
         with torch.no_grad(), torch.cuda.amp.autocast(dtype=(torch.bfloat16)) if 'fold0' in ckpt_path else nullcontext():
-            for x, y in progress.progress_manager.iterator(dl, desc='batch'):
+            for x, y in get_progress_manager().iterator(dl, desc='batch'):
                 p = model(x).float().clip(0, 1)
 
                 for idx, mask, pi in zip(y['ids'].cpu(), x['mask'].cpu(), p.cpu()):
@@ -146,7 +146,7 @@ def infer_type2(input_df: pd.DataFrame, checkpoint_dir: str, batch_size: int):
         })
 
     ckpt_paths = glob(f'{checkpoint_dir}/**/*.ckpt', recursive=True)
-    for ckpt_path in progress.progress_manager.iterator(ckpt_paths, desc='fold'):
+    for ckpt_path in get_progress_manager().iterator(ckpt_paths, desc='fold'):
         fold_results.append(run_fold(ckpt_path, input_df, batch_size))
         gc.collect()
         torch.cuda.empty_cache()
@@ -216,7 +216,7 @@ def infer(sequences: str | list[str] | pd.DataFrame, batch_size=128):
             0.1488
         ]
 
-        with progress.progress_manager.updater(total=11, desc='k4_gorna submodels') as pbar:
+        with get_progress_manager().updater(total=11, desc='k4_gorna submodels') as pbar:
             for args in type1_args:
                 preds.append(infer_type1(input_df.copy(deep=False), *args, batch_size))
                 pbar.update(1)

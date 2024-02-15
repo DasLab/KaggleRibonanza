@@ -18,7 +18,7 @@ from .models.junseong.utils import collate_preds as collate_preds_jungseong
 from .models.roger.data import RNA_DM as RNA_DM_Roger
 from .models.roger.bottle import RNA_Lightning as RNA_Lightning_Roger
 from .models.roger.utils import collate_preds as collate_preds_roger
-from ...util import progress
+from ...util.progress import get_progress_manager
 from ...util.feature_gen import FeatureName
 from ...util.format_input import format_input
 
@@ -41,7 +41,7 @@ class CustomProgressBar(ProgressBar):
         self.enable = True
 
     def on_predict_start(self, trainer, pl_module) -> None:
-        self.progress_updater = progress.progress_manager.updater(None, 'batch')
+        self.progress_updater = get_progress_manager().updater(None, 'batch')
         self.progress_updater.__enter__()
 
     def on_predict_end(self, trainer, pl_module) -> None:
@@ -106,7 +106,7 @@ def infer_aayan(input_df: pd.DataFrame, batch_size: int):
             'reactivity_2A3_MaP': preds[:,1].numpy()
         })
 
-    for ckpt_path in progress.progress_manager.iterator(ckpt_paths, desc='fold'):
+    for ckpt_path in get_progress_manager().iterator(ckpt_paths, desc='fold'):
         fold_results.append(run_fold(ckpt_path, input_df, batch_size))
         gc.collect()
         torch.cuda.empty_cache()
@@ -171,7 +171,7 @@ def infer_junseong(input_df: pd.DataFrame, batch_size: int):
             'reactivity_2A3_MaP': preds[:,1].numpy()
         })
 
-    for ckpt_path in progress.progress_manager.iterator(ckpt_paths, desc='fold'):
+    for ckpt_path in get_progress_manager().iterator(ckpt_paths, desc='fold'):
         fold_results.append(run_fold(ckpt_path, input_df, batch_size))
         gc.collect()
         torch.cuda.empty_cache()
@@ -231,7 +231,7 @@ def infer_roger(input_df: pd.DataFrame, ckpt_paths: list[str], batch_size: int):
             'reactivity_2A3_MaP': preds[:,1].numpy()
         })
 
-    for ckpt_path in progress.progress_manager.iterator(ckpt_paths, desc='fold'):
+    for ckpt_path in get_progress_manager().iterator(ckpt_paths, desc='fold'):
         fold_results.append(run_fold(ckpt_path, input_df, batch_size))
         gc.collect()
         torch.cuda.empty_cache()
@@ -257,7 +257,7 @@ def infer(sequences: str | list[str] | pd.DataFrame, batch_size=128):
         input_df = format_input(sequences)
 
         preds = []
-        with progress.progress_manager.updater(total=3, desc='k5_rlj submodels') as pbar:
+        with get_progress_manager().updater(total=3, desc='k5_rlj submodels') as pbar:
             preds.append(infer_aayan(input_df.copy(deep=False), batch_size))
             pbar.update(1)
 
