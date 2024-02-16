@@ -28,10 +28,15 @@ accompanying manuscript (full citation when available).
 
 ## Organization
 `external/`: External dependencies
+
 `src/models/`: Python modules used to perform inference
+
 `src/util/`: Common utilities, particularly for things like feature generation, caching, and output formatting 
+
 `notebooks/simple.ipynb`: Basic example of calling a single inference function with a single sequence
+
 `notebooks/extended.ipynb`: More complex example, demoing running multiple sequences and models, parallelizing and caching generated features, etc
+
 `scripts/inference.py`: Command line utility for running sequence inference
 
 ## Usage
