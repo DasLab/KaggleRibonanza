@@ -54,7 +54,7 @@ produce different output than the final Kaggle leaderboard submissions. Reasons 
 * Teams creating "leaderboard-optimized" submissions by ensembling previous top submissions (without reproducing all models precisely in their released code)
 * Teams no longer having access to original weights when releasing their models, leaving either a subset of models to be used or models with retrained weights
 * Some minor implementation details (eg, model compilation) have been changed to improve performance where it had negligeable impact on model output
-* Generation of base pairing probabilities uses different precision and rounding behavior for some models
+* Generation of base pairing probability features uses different precision and rounding behavior for some models
 * Modifications to perform all calculations in-memory (instead of requiring separate (manual) steps
   and intermediate files for generating features, ensembling submodels, etc) and with consistent interfaces
   (eg simple infer() methods, consistent availability and formatting of progress displays, etc)
