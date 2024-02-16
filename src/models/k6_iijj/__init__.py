@@ -10,7 +10,7 @@ from .model.srf.dataset import gen_ds
 from .model.srf import models
 from ...util.progress import get_progress_manager
 from ...util.feature_gen import FeatureName
-from ...util.format_input import format_input
+from ...util.data_format import format_input, format_output
 
 REQUIRED_FEATURES: list[FeatureName] = ['mfe_vienna2', 'mfe_eternafold', 'bpps_vienna2', 'bpps_eternafold']
 NUM_WORKERS = 0
@@ -67,8 +67,12 @@ def infer(sequences: str | list[str] | pd.DataFrame, batch_size=64):
             ensemble_logits += logits
     ensemble_logits = ensemble_logits / len(test_preds)
 
-    ensemble_preds = dict()
-    ensemble_preds['id'] = ids
-    ensemble_preds['reactivity_DMS_MaP'] = ensemble_logits[:, 1]
-    ensemble_preds['reactivity_2A3_MaP'] = ensemble_logits[:, 0]
-    return pd.DataFrame(ensemble_preds)
+    ensemble_pred = pd.DataFrame({
+        'id': ids,
+        'reactivity_DMS_MaP': ensemble_logits[:, 1],
+        'reactivity_2A3_MaP': ensemble_logits[:, 0],
+    })
+
+    format_output(input_df, ensemble_pred)
+
+    return ensemble_pred

@@ -8,7 +8,7 @@ from torch.utils.data import DataLoader
 from .model.model import RNAdjNetBrk, RNA_Dataset_Test, RNAdjNetBrkReactive, RNA_Dataset_Test_Reactive
 from ...util.progress import get_progress_manager
 from ...util.feature_gen import FeatureName
-from ...util.format_input import format_input
+from ...util.data_format import format_input, format_output
 from ...util.torch import DeviceDataLoader
 
 REQUIRED_FEATURES: list[FeatureName] = ['mfe_eternafold', 'mea_ipknot', 'bpps_eternafold']
@@ -185,12 +185,14 @@ def infer(sequences: str | list[str] | pd.DataFrame, batch_size=128):
         ensemble_pred['reactivity_2A3_MaP'] = ensemble_pred['reactivity_2A3_MaP']/len(preds)
 
         # predicts and adds correction predicted by dms-to-2a3 model
-        reacive_pred = infer_reactive(input_df.copy(deep=False), path.join(model_dir, 'dms2a3', 'model_0.pth'), ensemble_pred, batch_size)
+        reacive_pred = infer_reactive(input_df.copy(deep=False), path.join(model_dir, 'dms2a3', 'model_0.pth'), ensemble_pred.copy(deep=False), batch_size)
         pbar.update(1)
 
         a = len(preds)/(len(preds) + 1)
         b = 1/(len(preds) + 1)
 
         ensemble_pred['reactivity_2A3_MaP'] = a * ensemble_pred['reactivity_2A3_MaP'] + b * reacive_pred['reactivity_2A3_MaP']
+
+        format_output(input_df, ensemble_pred)
 
         return ensemble_pred

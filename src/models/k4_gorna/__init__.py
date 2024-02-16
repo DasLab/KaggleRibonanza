@@ -22,7 +22,7 @@ from .models.tattaka.exp072 import RibonanzaLightningModel as RLModel072
 from .models.yu4u.model import RNAModel as Type2Model
 from ...util.progress import get_progress_manager
 from ...util.feature_gen import FeatureName
-from ...util.format_input import format_input
+from ...util.data_format import format_input, format_output
 
 REQUIRED_FEATURES: list[FeatureName] = ['bpps_eternafold', 'bpps_contrafold', 'mea_eternafold_bpps']
 
@@ -229,4 +229,6 @@ def infer(sequences: str | list[str] | pd.DataFrame, batch_size=128):
         ensemble_pred['reactivity_DMS_MaP'] = sum([ pred['reactivity_DMS_MaP'] * weight for pred, weight in zip(preds, rdms_weights)]) / sum(rdms_weights)
         ensemble_pred['reactivity_2A3_MaP'] = sum([ pred['reactivity_2A3_MaP'] * weight for pred, weight in zip(preds, r2a3_weights)]) / sum(r2a3_weights)
         
+        format_output(input_df, ensemble_pred)
+
         return ensemble_pred

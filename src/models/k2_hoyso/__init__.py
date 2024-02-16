@@ -10,7 +10,7 @@ from .model.model import RNARegModel
 from .model.dataset import RNADataset, collate_fn
 from ...util.progress import get_progress_manager
 from ...util.feature_gen import FeatureName
-from ...util.format_input import format_input
+from ...util.data_format import format_input, format_output
 from ...util.torch import DeviceDataLoader
 
 REQUIRED_FEATURES: list[FeatureName] = ['bpps_linearfolde', 'sstype_capr', 'mfe_eternafold', 'sstype_bprna_eternafold']
@@ -91,8 +91,12 @@ def infer(sequences: str | list[str] | pd.DataFrame, batch_size=128):
         p_DMS = np.clip(p_DMS, 0, 1)
         p_2A3 = np.clip(p_2A3, 0, 1)
         
-        return pd.DataFrame({
+        ensemble_pred = pd.DataFrame({
             'id': np.arange(0, df_len, 1), 
             'reactivity_DMS_MaP': p_DMS, 
             'reactivity_2A3_MaP': p_2A3
         })
+
+        format_output(input_df, ensemble_pred)
+
+        return ensemble_pred

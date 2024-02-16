@@ -20,7 +20,7 @@ from .models.roger.bottle import RNA_Lightning as RNA_Lightning_Roger
 from .models.roger.utils import collate_preds as collate_preds_roger
 from ...util.progress import get_progress_manager
 from ...util.feature_gen import FeatureName
-from ...util.format_input import format_input
+from ...util.data_format import format_input, format_output
 
 SOL_DIR = path.join(path.dirname(__file__), 'model_weights')
 NUM_WORKERS = 0
@@ -295,5 +295,7 @@ def infer(sequences: str | list[str] | pd.DataFrame, batch_size=128):
             ensemble_pred['reactivity_2A3_MaP'] = ensemble_pred['reactivity_2A3_MaP'] + pred['reactivity_2A3_MaP']
         ensemble_pred['reactivity_DMS_MaP'] = ensemble_pred['reactivity_DMS_MaP']/len(preds)
         ensemble_pred['reactivity_2A3_MaP'] = ensemble_pred['reactivity_2A3_MaP']/len(preds)
+
+        format_output(input_df, ensemble_pred)
 
         return ensemble_pred

@@ -10,7 +10,7 @@ from .models.squeezeformer import CustomDataset as SequeezeformerDataset, Net as
 from .models.twintower import TestDataset as TwintowerDataset, Net as TwintowerNet, collate_fn as twintower_collate_fn
 from ...util.progress import get_progress_manager
 from ...util.feature_gen import FeatureName
-from ...util.format_input import format_input
+from ...util.data_format import format_input, format_output
 from ...util.torch import DeviceDataLoader
 
 REQUIRED_FEATURES: list[FeatureName] = ['bpps_linearfolde']
@@ -187,5 +187,7 @@ def infer(sequences: str | list[str] | pd.DataFrame, batch_size_squeezeformer=12
         ensemble_pred = squeezeformer_pred.loc[:, ['id']]
         ensemble_pred['reactivity_DMS_MaP'] = (squeezeformer_pred['reactivity_DMS_MaP'] + twintower_pred['reactivity_DMS_MaP']) / 2
         ensemble_pred['reactivity_2A3_MaP'] = (squeezeformer_pred['reactivity_2A3_MaP'] + twintower_pred['reactivity_2A3_MaP']) / 2
+
+        format_output(input_df, ensemble_pred)
 
         return ensemble_pred
