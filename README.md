@@ -15,16 +15,16 @@ accompanying manuscript (full citation when available).
     * `perl`
     * To compile external dependencies: `patch`, `git`, `gcc`, and `g++`
     * CUDA 12.1
-        > [!TIP]
-        > At risk of inducing errors, you can try using another 12.x version and commenting out the CUDA version check in the setup.py
-        > of the apex library (downlaoded to `external/apex` by `setup_external.sh`). The apex installation will fail if the version
-        > of CUDA used to build itself is different than the CUDA version used to build PyTorch
+> [!TIP]
+> At risk of inducing errors, you can try using another 12.x version and commenting out the CUDA version check in the setup.py
+> of the apex library (downlaoded to `external/apex` by `setup_external.sh`). The apex installation will fail if the version
+> of CUDA used to build itself is different than the CUDA version used to build PyTorch
 
 3) Install python dependencies via `pip install -r requirements.txt`
 4) Prep external libraries with `setup_external.sh`
-    > [!TIP]
-    > If you get a module not found error from apex when running models even though apex appeared to have been
-        installed correctly, you may want to try running `python setup.py install --cuda_ext --cpp_ext` in `external/apex`
+> [!TIP]
+> If you get a module not found error from apex when running models even though apex appeared to have been
+  installed correctly, you may want to try running `python setup.py install --cuda_ext --cpp_ext` in `external/apex`
 
 ## Organization
 `external/`: External dependencies
