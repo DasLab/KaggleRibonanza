@@ -5,6 +5,8 @@
 !/external/perl/cpan
 /external/perl/cpan/*
 !/external/perl/cpan/MyConfig.pm
+.venv/
+venv/
 
 # Caches
 __pycache__/
