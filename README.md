@@ -13,7 +13,7 @@ accompanying manuscript (full citation when available).
 2) Ensure the following prerequisites are installed:
     * Python 3.9-3.11 and pip >= 23.1
     * `perl`
-    * To compile external dependencies: `patch`, `git`, `gcc`, and `g++`
+    * To compile external dependencies: `patch`, `git`, `git-lfs` (and make sure you've run `git lfs install` before cloing this repository), `gcc`, and `g++`
     * CUDA 12.1
 > [!TIP]
 > At risk of inducing errors, you can try using another 12.x version and commenting out the CUDA version check in the setup.py
