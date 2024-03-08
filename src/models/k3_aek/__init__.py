@@ -1,3 +1,4 @@
+from typing import Union
 import warnings
 import gc
 from os import path
@@ -164,7 +165,7 @@ def infer_twintower(input_df: pd.DataFrame, batch_size: int):
 
     return df
 
-def infer(sequences: str | list[str] | pd.DataFrame, batch_size_squeezeformer=128, batch_size_twintower=8):
+def infer(sequences: Union[str, list[str], pd.DataFrame], batch_size_squeezeformer=128, batch_size_twintower=8):
     with warnings.catch_warnings():
         warnings.filterwarnings('ignore', ".*'has_cuda' is deprecated.*")
         warnings.filterwarnings('ignore', ".*'has_cudnn' is deprecated.*")

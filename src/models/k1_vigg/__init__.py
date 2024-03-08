@@ -1,3 +1,4 @@
+from typing import Union
 from contextlib import nullcontext
 from os import path
 import gc
@@ -138,7 +139,7 @@ def infer_reactive(
         'reactivity_2A3_MaP':preds[:].numpy()
     })
 
-def infer(sequences: str | list[str] | pd.DataFrame, batch_size=128):
+def infer(sequences: Union[str, list[str], pd.DataFrame], batch_size=128):
     input_df = format_input(sequences)
 
     model_dir = path.join(path.dirname(__file__), 'model_weights')

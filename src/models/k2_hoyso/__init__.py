@@ -1,3 +1,4 @@
+from typing import Union
 import warnings
 import gc
 import glob
@@ -57,7 +58,7 @@ def infer_model(path: str, input_df: pd.DataFrame, batch_size: int):
         'reactivity_2A3_MaP': preds[:,0].numpy()
     })
 
-def infer(sequences: str | list[str] | pd.DataFrame, batch_size=128):
+def infer(sequences: Union[str, list[str], pd.DataFrame], batch_size=128):
     with warnings.catch_warnings():
         warnings.filterwarnings('ignore', ".*'has_cuda' is deprecated.*")
         warnings.filterwarnings('ignore', ".*'has_cudnn' is deprecated.*")

@@ -1,23 +1,20 @@
+from typing import Union
 from os import path
 import gc
 import math
 import warnings
 import logging
 from argparse import Namespace
-import numpy as np
 import pandas as pd
 import torch
 import lightning.pytorch as pl
 from lightning.pytorch.callbacks import ProgressBar
 from .models.aayan.data import RNA_DM as RNA_DM_Aayan
 from .models.aayan.bottle import RNA_Lightning as RNA_Lightning_Aayan
-from .models.aayan.utils import collate_preds as collate_preds_aayan
 from .models.junseong.data import RNA_DM as RNA_DM_Junseong
 from .models.junseong.bottle import RNA_Lightning as RNA_Lightning_Junseong
-from .models.junseong.utils import collate_preds as collate_preds_jungseong
 from .models.roger.data import RNA_DM as RNA_DM_Roger
 from .models.roger.bottle import RNA_Lightning as RNA_Lightning_Roger
-from .models.roger.utils import collate_preds as collate_preds_roger
 from ...util.progress import get_progress_manager
 from ...util.feature_gen import FeatureName
 from ...util.data_format import format_input, format_output
@@ -245,7 +242,7 @@ def infer_roger(input_df: pd.DataFrame, ckpt_paths: list[str], batch_size: int):
 
     return ensemble_pred
 
-def infer(sequences: str | list[str] | pd.DataFrame, batch_size=128):
+def infer(sequences: Union[str, list[str], pd.DataFrame], batch_size=128):
     with warnings.catch_warnings():
         warnings.filterwarnings('ignore', '.*does not have many workers.*')
         warnings.filterwarnings('ignore', '.*dropout option adds dropout after all but last recurrent layer.*')

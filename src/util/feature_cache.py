@@ -1,3 +1,4 @@
+from typing import Union
 from abc import ABC, abstractmethod
 from contextlib import AbstractContextManager
 from collections import namedtuple
@@ -6,7 +7,7 @@ import numpy as np
 import h5py
 from pathlib import Path
 
-Feature = str | np.ndarray
+Feature = Union[str, np.ndarray]
 VersionedFeature = namedtuple('VersionedFeature', ['value', 'version'])
 FeatureCacheKey = namedtuple('FeatureCacheKey', ['feature', 'sequence'])
 
@@ -26,7 +27,7 @@ class FeatureCache(AbstractContextManager, ABC):
         return None
     
     @abstractmethod
-    def get(self, feature: str, sequence: str, version: int = 1) -> Feature | None:
+    def get(self, feature: str, sequence: str, version: int = 1) -> Union[Feature, None]:
         raise NotImplementedError()
     
     @abstractmethod
@@ -38,7 +39,7 @@ class FeatureCache(AbstractContextManager, ABC):
         raise NotImplementedError()
 
 class NullFeatureCache(FeatureCache):
-    def get(self, feature: str, sequence: str, version: int = 1) -> Feature | None:
+    def get(self, feature: str, sequence: str, version: int = 1) -> Union[Feature, None]:
         return None
 
     def set(self, feature: str, sequence: str, value: Feature, version: int = 1):
@@ -51,7 +52,7 @@ class MemoryFeatureCache(FeatureCache):
     def __init__(self):
         self.data: dict[FeatureCacheKey, VersionedFeature] = {}
 
-    def get(self, feature: str, sequence: str, version: int = 1) -> Feature | None:
+    def get(self, feature: str, sequence: str, version: int = 1) -> Union[Feature, None]:
         res = self.data.get((feature, sequence))
         
         if not res: return None
@@ -85,7 +86,7 @@ class FSFeatureCache(FeatureCache):
 
         return super().__exit__(exc_type, exc_value, exc_tb)
 
-    def get(self, feature: str, sequence: str, version: int = 1, retry = 0) -> Feature | None:
+    def get(self, feature: str, sequence: str, version: int = 1, retry = 0) -> Union[Feature, None]:
         res = self.f.get(f'{feature}-{sequence}')
 
         if not res: return None
@@ -114,7 +115,7 @@ class FSFeatureCache(FeatureCache):
         return f'{feature}-{sequence}' in self.f
 
 default_cache = NullFeatureCache()
-cache: FeatureCache | None = default_cache
+cache: Union[FeatureCache, None] = default_cache
 
 def get_feature_cache():
     return cache

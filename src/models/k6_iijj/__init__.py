@@ -1,3 +1,4 @@
+from typing import Union
 from os import path
 import gc
 import numpy as np
@@ -15,7 +16,7 @@ from ...util.data_format import format_input, format_output
 REQUIRED_FEATURES: list[FeatureName] = ['mfe_vienna2', 'mfe_eternafold', 'bpps_vienna2', 'bpps_eternafold']
 NUM_WORKERS = 0
 
-def infer(sequences: str | list[str] | pd.DataFrame, batch_size=64):
+def infer(sequences: Union[str, list[str], pd.DataFrame], batch_size=64):
     input_df = format_input(sequences)
 
     MODEL_NAMES = "SRFBPP_semi2debxsd01_KF0 SRFBPPGNN_semi2debxsd02_KF0 SRFBPPGNN_semi2debxsd01_KF0 SRFBPPGNN_semidebxsd04_KF0 SRFBPPGNN_semidebxsd03_KF0 SRFBPP_semidebxsd01_KF0 SRFBPP_semidebxsd04_KF0 SRFBPPGNN_semidebxsd02_KF0 SRFBPPGNN_semidebxsd01_KF0 SRFBPP_semidebxsd03_KF0"

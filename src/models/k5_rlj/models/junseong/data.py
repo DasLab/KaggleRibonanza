@@ -1,3 +1,4 @@
+from typing import Union
 import random
 from argparse import Namespace
 import pickle
@@ -21,12 +22,12 @@ class RNA_DS(torch.utils.data.Dataset):
     def __init__(
         self,
         df: pd.DataFrame,
-        sn_min: int | float = 0,
+        sn_min: Union[int, float] = 0,
         err_max: float = 0,
-        aux_loop: str | None = None,
+        aux_loop: Union[str, None] = None,
         aug_loop: bool = False,
         p_flip: float = 0.0,
-        path_mats: str | None = None,
+        path_mats: Union[str, None] = None,
     ):
         if sn_min > 0:
             if isinstance(sn_min, int):
@@ -86,13 +87,12 @@ class RNA_DS(torch.utils.data.Dataset):
         return {"As": cat_mat}
 
     def get_loop(self, r):
-        match self.aux_loop:
-            case "eterna":
-                loop = r.eterna_loop
-            case "contra":
-                loop = r.contra_loop
-            case "aug":
-                loop = r.eterna_loop if random.random() < 0.5 else r.contra_loop
+        if self.aux_loop == 'eterna':
+            loop = r.eterna_loop
+        elif self.aux_loop == 'contra':
+            loop = r.contra_loop
+        elif self.aux_loop == 'aug':
+            loop = loop = r.eterna_loop if random.random() < 0.5 else r.contra_loop
         loop = torch.LongTensor([self.kmap_loop[_] for _ in loop])
         return {"loop": loop}
 
@@ -228,11 +228,11 @@ class RNA_DM(pl.LightningDataModule):
         self,
         hp: Namespace,
         n_workers: int = 0,
-        df_infer: pd.DataFrame | None = None,
-        df_train: pd.DataFrame | None = None,
-        fold_idxs: list | None = None,
-        path_mat_train: str | None = None,
-        path_mat_test: str | None = None
+        df_infer: Union[pd.DataFrame, None] = None,
+        df_train: Union[pd.DataFrame, None] = None,
+        fold_idxs: Union[list, None] = None,
+        path_mat_train: Union[str, None] = None,
+        path_mat_test: Union[str, None] = None
     ):
         super().__init__()
         self.df_train = None

@@ -1,5 +1,4 @@
-import itertools
-import os
+from typing import Union
 import random
 from argparse import Namespace
 
@@ -16,9 +15,9 @@ class RNA_DS(torch.utils.data.Dataset):
     def __init__(
         self,
         df: pd.DataFrame,
-        sn_min: int | float = 0,
-        aux_loop: str | None = None,
-        aux_struct: str | None = None,
+        sn_min: Union[int, float] = 0,
+        aux_loop: Union[str, None] = None,
+        aux_struct: Union[str, None] = None,
         aug_reverse: bool = False,
     ):
         if sn_min > 0:
@@ -363,13 +362,13 @@ class RNA_DM(pl.LightningDataModule):
         self,
         hp: Namespace,
         n_workers: int = 0,
-        df_infer: pd.DataFrame | None = None,
-        df_train: pd.DataFrame | None = None,        
-        fold_idxs: list | None = None,
+        df_infer: Union[pd.DataFrame, None] = None,
+        df_train: Union[pd.DataFrame, None] = None,        
+        fold_idxs: Union[list, None] = None,
         
         pseudo_labeling: bool=False,
-        df_pseudo: pd.DataFrame | None = None,
-        fold_idxs_for_pseudo: list | None = None,
+        df_pseudo: Union[pd.DataFrame, None] = None,
+        fold_idxs_for_pseudo: Union[list, None] = None,
     ):
         super().__init__()
         self.df_train = None

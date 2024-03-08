@@ -1,8 +1,9 @@
+from typing import Union
 import re
 import numpy as np
 import pandas as pd
 
-def format_input(input: str | list[str] | pd.DataFrame):
+def format_input(input: Union[str, list[str], pd.DataFrame]):
     if isinstance(input, pd.DataFrame):
         df = input.copy(deep=False)
     elif isinstance(input, list):

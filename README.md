@@ -11,7 +11,7 @@ accompanying manuscript (full citation when available).
     * An available CUDA device
 
 2) Ensure the following prerequisites are installed:
-    * Python 3.10 with pip >= 23.1
+    * Python 3.9-3.11 and pip >= 23.1
     * `perl`
     * To compile external dependencies: `patch`, `git`, `gcc`, and `g++`
     * CUDA 12.1

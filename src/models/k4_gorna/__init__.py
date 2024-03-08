@@ -1,10 +1,10 @@
+from typing import Union
 import warnings
 from os import path
 import gc
 from glob import glob
 from types import SimpleNamespace
 from contextlib import nullcontext
-import numpy as np
 import pandas as pd
 import torch
 from torch.utils.data import DataLoader
@@ -160,7 +160,7 @@ def infer_type2(input_df: pd.DataFrame, checkpoint_dir: str, batch_size: int):
 
     return ensemble_pred
 
-def infer(sequences: str | list[str] | pd.DataFrame, batch_size=128):
+def infer(sequences: Union[str, list[str], pd.DataFrame], batch_size=128):
     with warnings.catch_warnings():
         warnings.filterwarnings('ignore', '.*Support for mismatched key_padding_mask and attn_mask is deprecated.*')
 

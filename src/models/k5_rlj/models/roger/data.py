@@ -1,3 +1,4 @@
+from typing import Union
 import os
 import random
 from argparse import Namespace
@@ -103,9 +104,9 @@ class RNA_DM(pl.LightningDataModule):
         self,
         hp: Namespace,
         n_workers: int = 0,
-        df_infer: pd.DataFrame | None = None,
-        df_train: pd.DataFrame | None = None,
-        df_valid: pd.DataFrame | None = None,
+        df_infer: Union[pd.DataFrame, None] = None,
+        df_train: Union[pd.DataFrame, None] = None,
+        df_valid: Union[pd.DataFrame, None] = None,
     ):
         super().__init__()
         self.df_train, self.df_valid, self.df_infer = df_train, df_valid, df_infer

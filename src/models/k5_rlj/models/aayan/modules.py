@@ -1,3 +1,4 @@
+from typing import Union
 import admin_torch as admin
 import torch
 import torch.nn.functional as F
@@ -6,7 +7,6 @@ from rotary_embedding_torch import RotaryEmbedding as Rope
 from torch import Tensor, nn
 from x_transformers.x_transformers import RelativePositionBias as RelPB
 from apex.normalization import FusedLayerNorm, FusedRMSNorm
-
 
 class ProjectOut(nn.Module):
     def __init__(
@@ -39,8 +39,8 @@ class RNA_Model(nn.Module):
         norm_lax: bool,
         emb_grad_frac: float,
         n_mem: int,
-        aux_loop: str | None,
-        aux_struct: str | None,
+        aux_loop: Union[str, None],
+        aux_struct: Union[str, None],
         kernel_size_gc: int,
         **kwargs,
     ):
@@ -203,9 +203,9 @@ class Multi_head_Attention(nn.Module):
     def forward(
         self,
         x: Tensor,
-        mask: Tensor | None,
-        rope: nn.Module | None,
-        pos_bias: nn.Module | None,
+        mask: Union[Tensor, None],
+        rope: Union[nn.Module, None],
+        pos_bias: Union[nn.Module, None],
     ) -> Tensor:
         B, L, N, D = (*x.shape[:2], self.n_heads, self.d_heads)
         qkv = [_.view(B, L, N, D) for _ in self.qkv(x).chunk(3, -1)]
@@ -224,13 +224,13 @@ class Multi_head_Attention(nn.Module):
         x = self.att(qkv, bias.contiguous()).reshape(B, L, N * D)
         return self.out(x)
 
-    def sdpa(self, qkv: tuple[Tensor, Tensor, Tensor], bias: Tensor | None) -> Tensor:
+    def sdpa(self, qkv: tuple[Tensor, Tensor, Tensor], bias: Union[Tensor, None]) -> Tensor:
         p_drop = self.p_dropout if self.training else 0
         qkv = [_.transpose(1, 2) for _ in qkv]
         x = F.scaled_dot_product_attention(*qkv, bias, p_drop)
         return x.transpose(1, 2)
 
-    def xmea(self, qkv: tuple[Tensor, Tensor, Tensor], bias: Tensor | None) -> Tensor:
+    def xmea(self, qkv: tuple[Tensor, Tensor, Tensor], bias: Union[Tensor, None]) -> Tensor:
         p_drop = self.p_dropout if self.training else 0
         if bias != None and (L := qkv[0].size(1)) % 8:
             pad = -(L // -8) * 8 - L
