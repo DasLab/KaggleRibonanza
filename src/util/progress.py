@@ -30,7 +30,7 @@ class ProgressManager(AbstractContextManager, ABC):
         raise NotImplementedError()
 
 class NullProgress(ProgressManager):
-    def iterator(self, iterable: Iterable[T], desc: str = None) -> Iterable[T]:
+    def iterator(self, iterable: Iterable[T], desc: str = None, total: int = None) -> Iterable[T]:
         return iterable
     
     def updater(self, total: int = None, desc: str = None):
