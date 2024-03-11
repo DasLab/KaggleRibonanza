@@ -64,6 +64,7 @@ def run(args):
 
     with progress, cache:
         models = load_models(sorted(set(args.include_models) - set(args.exclude_models)))
+        if len(models) == 0: return
         
         if args.cache_type != 'none':
             precompute_features(models.keys(), sequences['sequence'], args.parallel_feature_jobs)
