@@ -237,12 +237,12 @@ if __name__ == '__main__':
             By default, all models will be included. Manually setting included models will override
             this behavior, and excluded models will override the resulting included models. Multiple
             models may be specified either by passing these arguments multiple times or by using a comma
-            separated list Valid models include: 'k1_vigg', 'k2_koyso', 'k3_aek', 'k4_gorna', 'k5_rlj',
+            separated list Valid models include: 'k1_vigg', 'k2_hoyso', 'k3_aek', 'k4_gorna', 'k5_rlj',
             and 'k6_iijj' (you can also specify them like 'k1' or 'vigg')
         '''
     )
 
-    model_choices = ['k1_vigg', 'k2_koyso', 'k3_aek', 'k4_gorna', 'k5_rlj', 'k6_iijj']
+    model_choices = ['k1_vigg', 'k2_hoyso', 'k3_aek', 'k4_gorna', 'k5_rlj', 'k6_iijj']
     class ModelSelector(argparse.Action):
         first_call = True
 
@@ -274,7 +274,7 @@ if __name__ == '__main__':
         '--include-models',
         action=ModelSelector,
         metavar='MODEL[,MODEL]',
-        default=['k1_vigg', 'k2_koyso', 'k3_aek', 'k4_gorna', 'k5_rlj', 'k6_iijj'],
+        default=['k1_vigg', 'k2_hoyso', 'k3_aek', 'k4_gorna', 'k5_rlj', 'k6_iijj'],
         help='Models to include inference for. Default: all models'
     )
     model_group.add_argument(
