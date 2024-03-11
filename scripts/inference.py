@@ -156,6 +156,7 @@ def run(args):
                     fig.show()
                 else:
                     fig.savefig(os.path.join(args.outdir, f'{output_name}.png'))
+                    fig.close()
         
             if args.outdir is None:
                 plt.show(block=True)
