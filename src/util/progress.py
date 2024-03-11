@@ -130,7 +130,7 @@ class ConsoleProgress(TqdmProgress):
         return tqdm_std(*args, **kwargs, leave=self.level == 0)
 
 default_progress_manager = NullProgress()
-progress_manager = default_progress_manager
+progress_manager: ProgressManager = default_progress_manager
 
-def get_progress_manager():
+def get_progress_manager() -> ProgressManager:
     return progress_manager

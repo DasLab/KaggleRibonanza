@@ -115,7 +115,7 @@ class FSFeatureCache(FeatureCache):
         return f'{feature}-{sequence}' in self.f
 
 default_cache = NullFeatureCache()
-cache: Union[FeatureCache, None] = default_cache
+cache: FeatureCache = default_cache
 
-def get_feature_cache():
+def get_feature_cache() -> FeatureCache:
     return cache
