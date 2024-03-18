@@ -43,7 +43,8 @@ accompanying manuscript (full citation when available).
 * The provided notebooks can be used to interactively explore inference results. In particular, configuration variables are
   provided in the top of the `extended` notebook which allow you to change sequences, limit models, etc.
 * The `inference` script can be used to run inference non-interactively. A basic example can be run with `inference.py GGGGAAAACCCC --plot`,
-  which will display a matplotlib window with heatmaps for each model and print the raw data as a TSV to the console
+  which will display a matplotlib window with heatmaps for each model and print the raw data as a TSV to the console. Run `inference.py -h`
+  for full usage information.
 * Both of these options also provide examples for calling inference functions from your own code. The simplest
   method is to `from src.models.<model> import infer` and then call `infer(<sequence_or_sequences>)`, however with more significant usage
   you may also want to set up feature precomputation and caching, adjust batch sizes, etc.
