@@ -9,13 +9,13 @@ accompanying manuscript (full citation when available).
 1) System Prequisites:
     * Unix environment (tested on Linux, other operating systems may require alternate processes for setting up external dependencies)
     * An available CUDA device
-    * 40GB of free disk space (not including space needed for storing persistent output)
+    * 40-50GB of free disk space (not including space needed for storing persistent output)
 
 2) Ensure the following prerequisites are installed:
-    * Python 3.9-3.11 and pip >= 23.1
-    * `git` and `git-lfs` (make sure you've run `git lfs install` before cloning this repository)
+    * `git` and `git-lfs` (make sure you've run `git lfs install` before cloning this repository) to ensure this repository is cloned with model weights which are stored with Git LFS
+    * Python 3.9.2-3.11 (3.9.0-3.9.1 also works for models EXCEPT k5) and pip >= 23.1
     * `perl`
-    * To compile external dependencies: `patch`, `git`, `gcc`, and `g++`
+    * `patch`, `cmake` (>= 3.8), `gcc`, and `g++` (tested with gcc10 and gcc13) for retriving and compiling external dependencies (along with `git`)
     * CUDA 12.1
 > [!TIP]
 > At risk of inducing errors, you can try using another 12.x version and commenting out the CUDA version check in the setup.py
