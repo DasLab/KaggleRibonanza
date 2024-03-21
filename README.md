@@ -9,11 +9,13 @@ accompanying manuscript (full citation when available).
 1) System Prequisites:
     * Unix environment (tested on Linux, other operating systems may require alternate processes for setting up external dependencies)
     * An available CUDA device
+    * 40GB of free disk space (not including space needed for storing persistent output)
 
 2) Ensure the following prerequisites are installed:
     * Python 3.9-3.11 and pip >= 23.1
+    * `git` and `git-lfs` (make sure you've run `git lfs install` before cloning this repository)
     * `perl`
-    * To compile external dependencies: `patch`, `git`, `git-lfs` (and make sure you've run `git lfs install` before cloing this repository), `gcc`, and `g++`
+    * To compile external dependencies: `patch`, `git`, `gcc`, and `g++`
     * CUDA 12.1
 > [!TIP]
 > At risk of inducing errors, you can try using another 12.x version and commenting out the CUDA version check in the setup.py
@@ -48,6 +50,9 @@ accompanying manuscript (full citation when available).
 * Both of these options also provide examples for calling inference functions from your own code. The simplest
   method is to `from src.models.<model> import infer` and then call `infer(<sequence_or_sequences>)`, however with more significant usage
   you may also want to set up feature precomputation and caching, adjust batch sizes, etc.
+
+> [!TIP]
+> By default, batch sizes used for models are optimized for an 8GB GPU and sequences up to length 457. If you have more GPU memory or shorter maximum sequence lengths, you may want to increase the batch size to run inference for more sequences at once. If you have longer sequences or a smaller GPU, you conevrsely may need to reduce the batch size.
 
 ## Differences From Original Models
 There are some situations where the models are not identical to the original code used for the competition or otherwise
