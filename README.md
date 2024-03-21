@@ -24,9 +24,6 @@ accompanying manuscript (full citation when available).
 
 3) Install python dependencies via `pip install -r requirements.txt`
 4) Prep external libraries with `setup_external.sh`
-> [!TIP]
-> If you get a module not found error from apex when running models even though apex appeared to have been
-  installed correctly, you may want to try running `python setup.py install --cuda_ext --cpp_ext` in `external/apex`
 
 ## Organization
 `external/`: External dependencies

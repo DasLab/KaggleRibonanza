@@ -19,3 +19,7 @@ rotary-embedding-torch==0.5.3
 x-transformers==1.27.16
 torch_geometric==2.4.0
 admin_torch==0.1.0
+#### The following are required for building apex
+setuptools>=64
+# Verified with 0.43.0, though left unpinned to improve system compatibility
+wheel
