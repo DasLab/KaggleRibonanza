@@ -49,7 +49,7 @@ accompanying manuscript (full citation when available).
   you may also want to set up feature precomputation and caching, adjust batch sizes, etc.
 
 > [!TIP]
-> By default, batch sizes used for models are optimized for an 8GB GPU and sequences up to length 457. If you have more GPU memory or shorter maximum sequence lengths, you may want to increase the batch size to run inference for more sequences at once. If you have longer sequences or a smaller GPU, you conevrsely may need to reduce the batch size.
+> By default, batch sizes used for models are optimized for an 8GB GPU and sequences up to length 457. If you have more GPU memory or shorter maximum sequence lengths, you may want to increase the batch size to run inference for more sequences at once. If you have longer sequences or a smaller GPU, you conversely may need to reduce the batch size.
 
 ## Differences From Original Models
 There are some situations where the models are not identical to the original code used for the competition or otherwise
